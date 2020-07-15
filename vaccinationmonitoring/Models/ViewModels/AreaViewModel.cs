@@ -10,7 +10,7 @@ namespace vaccinationmonitoring.Models.ViewModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int ProvinceId { get; set; }
+        public int CityId { get; set; }
         public IList<City> CityList { get; set; }
         public IList<CityAreaModel> CAList { get; set; }
     }
