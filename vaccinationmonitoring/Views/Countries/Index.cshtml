@@ -1,0 +1,106 @@
+﻿@model IEnumerable<vaccinationmonitoring.Models.Country>
+
+    <div class="container-fluid">
+        <div class="bg-gradient-primary text-center text-white w-25" style="margin:auto; font-size: x-large; ">All Countries</div>
+
+        <p>
+            <a data-toggle="modal" data-target="#myModal" class="btn btn-success btn-sm text-white" >Create New</a>
+        </p>
+        <table class="table" id="countryTable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                   
+                    <th>
+                        @Html.DisplayNameFor(model => model.CreatedDate)
+                    </th>
+                    
+                    <th>
+                        @Html.DisplayNameFor(model => model.ModifiedDate)
+                    </th>
+                   <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                       
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreatedDate)
+                        </td>
+                      
+                        <td>
+                             @(item != null && item.ModifiedDate != null ? item.ModifiedDate.Value.ToString("dd/MM/yyyy h:mm tt") : "Not modified yet")
+                        </td>
+                        <td>
+                            <button data-toggle="modal" data-target="#myModal" data-countryid="@item.Id" data-countryname="@item.Name" class="btn" id="countryEdit">Edit</button> |
+                            @*<a asp-action="Details" asp-route-id="@item.Id">Details</a> *@
+                            <button data-countryid="@item.Id" id="countryDelete" class="btn">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title float-left">Add a new Country</h4>
+                        <button type="button" class="close float-lg-right" data-dismiss="modal">&times;</button>
+
+                    </div>
+                    <div class="modal-body">
+                        <form id="countryform" method="post" asp-action="Add" asp-controller="Countries">
+                            <input type="hidden" id="countryid" name="Id" value="0"/>
+                            <div class="form-group">
+                                <label for="countryname">Country Name:</label>
+                                <input type="text" class="form-control" id="countryname" name="countryname" required>
+                            </div>
+                 
+                            <button type="reset" class="btn btn-danger text-white float-left">Reset</button>
+                            <button type="submit" class="btn btn-primary text-white float-right">Submit</button>
+                        </form>
+                    </div>
+                   
+                </div>
+
+            </div>
+        </div>
+        </div>
+        @section scripts
+{
+            <script>
+                $(document).ready(function () {
+
+                    $("#countryTable").DataTable();
+
+                    $("#content").on('click','#countryEdit',function () {
+                        $('#countryid').val($(this).data('countryid'));
+                        $('#countryname').val($(this).data('countryname'));
+                    });
+
+                    $("#content").on('click', '#countryDelete', function () {
+                        $.ajax({
+                            type: "POST",
+                            url: "/countries/delete?Id=" + $(this).data('countryid'),
+                            success: function (data) {
+                                window.location.reload(true);
+                            },
+                            
+                    });
+                    });
+
+                });
+
+            </script>
+
+        }

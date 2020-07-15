@@ -1,0 +1,82 @@
+﻿@model IEnumerable<vaccinationmonitoring.Models.House>
+<div class="container-fluid">
+    <div class="bg-gradient-primary text-center text-white w-25" style="margin:auto; font-size: x-large; ">All Houses</div>
+
+    <p>
+        <a data-toggle="modal" data-target="#myModal" class="btn btn-success btn-sm text-white">Create New</a>
+    </p>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table houseTable">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.HouseNo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AreaId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreatedBy)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreatedDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ModifiedBy)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ModifiedDate)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HouseNo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AreaId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedBy)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ModifiedBy)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ModifiedDate)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+
+            $("#houseTable").DataTable();
+
+        });
+    </script>
+
+}
+
+
