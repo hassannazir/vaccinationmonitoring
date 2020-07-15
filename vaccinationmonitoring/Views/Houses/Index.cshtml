@@ -1,79 +1,114 @@
-﻿@model IEnumerable<vaccinationmonitoring.Models.House>
-<div class="container-fluid">
-    <div class="bg-gradient-primary text-center text-white w-25" style="margin:auto; font-size: x-large; ">All Houses</div>
+﻿@model vaccinationmonitoring.Models.ViewModels.HouseViewModel
+    <div class="container-fluid">
+        <div class="bg-gradient-primary text-center text-white w-25" style="margin:auto; font-size: x-large; ">All Houses</div>
 
-    <p>
-        <a data-toggle="modal" data-target="#myModal" class="btn btn-success btn-sm text-white">Create New</a>
-    </p>
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-    <table class="table houseTable">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.HouseNo)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.AreaId)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CreatedBy)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CreatedDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ModifiedBy)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ModifiedDate)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+        <p>
+            <a data-toggle="modal" data-target="#myModal" class="btn btn-success btn-sm text-white">Create New</a>
+        </p>
+
+        <table class="table" id="houseTable">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.HouseNo)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AreaId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CreatedBy)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CreatedDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ModifiedBy)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ModifiedDate)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
+                    <th>
+                        House Number
+                    </th>
+                    <th>
+                        Area 
+                    </th>
+                    <th>
+                        Created Date
+                    </th>
+                    <th>
+                        Modified Date
+                    </th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.AHList)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.HouseNo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AreaName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreatedDate)
+                        </td>
+                        <td>
+                            @(item != null && item.ModifiedDate != null ? item.ModifiedDate.Value.ToString("dd/MM/yyyy h:mm tt") : "Not modified yet")
+                        </td>
+                        <td>
+                            <button data-toggle="modal" data-target="#myModal" data-areaid="@item.AreaId" data-areaname="@item.AreaName" data-housename="@item.HouseNo" data-houseid="@item.HouseId" class="btn" id="houseEdit">Edit</button> |
+                            @*<a asp-action="Details" asp-route-id="@item.Id">Details</a> *@
+                            <button data-houseid="@item.HouseId" id="houseDelete" class="btn">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title float-left">Add a new House</h4>
+                        <button type="button" class="close float-lg-right" data-dismiss="modal">&times;</button>
+
+                    </div>
+                    <div class="modal-body">
+                        <form id="houseform" method="post" asp-action="Add" asp-controller="Houses">
+                            <input type="hidden" id="houseid" name="Id" value="0" />
+                            <div class="form-group">
+                                <label for="areaname">House Number:</label>
+                                <input type="text" class="form-control" id="housename" name="housename" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="areaname">
+                                    <select class="form-control" id="areaname" name="areaId">
+                                        @foreach (var item in Model.AreaList)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    </select>
+                                </label>
+                            </div>
+                            <button type="reset" class="btn btn-danger text-white float-left">Reset</button>
+                            <button type="submit" class="btn btn-primary text-white float-right">Submit</button>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 @section scripts
 {
     <script>
         $(document).ready(function () {
 
             $("#houseTable").DataTable();
+            $("#content").on('click', '#houseEdit', function () {
+              
+                $('#houseid').val($(this).data('houseid'));
+                $('#housename').val($(this).data('housename'));
+                $('#areaname option[value="' + $(this).data('areaid') + '"]').prop('selected', true);
+            });
 
+            $("#content").on('click', '#houseDelete', function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/houses/delete?Id=" + $(this).data('houseid'),
+                    success: function (data) {
+                        window.location.reload(true);
+                    },
+
+                });
+            });
         });
     </script>
 
