@@ -1,0 +1,105 @@
+﻿@model IEnumerable<vaccinationmonitoring.Models.User>
+
+@{
+    ViewData["Title"] = "Workers";
+}
+
+    <div class="container-fluid">
+        <div class="bg-gradient-primary text-center text-white w-25" style="margin:auto; font-size: x-large; ">All Workers</div>
+
+        <p>
+            <a data-toggle="modal" data-target="#myModal" class="btn btn-success btn-sm text-white">Create New</a>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Area
+                    </th>
+                    <th>
+                        City
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EmailAddress)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Address)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IsActive)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PhoneNumber)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @(item!=null?(!string.IsNullOrEmpty(item.FirstName)?item.FirstName:string.Empty)+" "+(!string.IsNullOrEmpty(item.LastName)?item.LastName:string.Empty):string.Empty)
+                        </td>
+                        <td>
+                            @(item!=null&&item.Role==vaccinationmonitoring.Helpers.AppConstants.RoleWorker?vaccinationmonitoring.Helpers.AppConstants.Worker:string.Empty)
+                        </td>
+                        <td>
+                            @(item!=null&&item.Status==vaccinationmonitoring.Helpers.AppConstants.UserApprovedStatus?vaccinationmonitoring.Helpers.AppConstants.UApprovedStatus:item.Status==vaccinationmonitoring.Helpers.AppConstants.UserNotApprovedStatus?vaccinationmonitoring.Helpers.AppConstants.UNotApprovedStatus:string.Empty)
+                        </td>
+                       
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EmailAddress)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Address)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsActive)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title float-left">Add a new Country</h4>
+                        <button type="button" class="close float-lg-right" data-dismiss="modal">&times;</button>
+
+                    </div>
+                    <div class="modal-body">
+                        <form id="countryform" method="post" asp-action="Add" asp-controller="Countries">
+                            <input type="hidden" id="countryid" name="Id" value="0" />
+                            <div class="form-group">
+                                <label for="countryname">Country Name:</label>
+                                <input type="text" class="form-control" id="countryname" name="countryname" required>
+                            </div>
+
+                            <button type="reset" class="btn btn-danger text-white float-left">Reset</button>
+                            <button type="submit" class="btn btn-primary text-white float-right">Submit</button>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+</div>

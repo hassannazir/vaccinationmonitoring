@@ -24,6 +24,7 @@ namespace vaccinationmonitoring.Models
         public virtual DbSet<House> House { get; set; }
         public virtual DbSet<Province> Province { get; set; }
         public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<UserLogin> UserLogin { get; set; }
 
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //        {
@@ -256,6 +257,10 @@ namespace vaccinationmonitoring.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.Address)
+                    .HasColumnName("address")
+                    .HasMaxLength(150);
+
                 entity.Property(e => e.AreaId).HasColumnName("area_id");
 
                 entity.Property(e => e.CreatedBy).HasColumnName("created_by");
@@ -264,17 +269,46 @@ namespace vaccinationmonitoring.Models
                     .HasColumnName("created_date")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.EmailAddress)
+                    .HasColumnName("email_address")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.FirstName)
+                    .HasColumnName("first_name")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.IsActive).HasColumnName("is_active");
+
+                entity.Property(e => e.LastName)
+                    .HasColumnName("last_name")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.ModifiedBy).HasColumnName("modified_by");
 
                 entity.Property(e => e.ModifiedDate)
                     .HasColumnName("modified_date")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.Role)
-                    .HasColumnName("role")
+                entity.Property(e => e.Password)
+                    .HasColumnName("password")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.PhoneNumber)
+                    .HasColumnName("phone_number")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Role).HasColumnName("role");
+
                 entity.Property(e => e.Status).HasColumnName("status");
+            });
+
+            modelBuilder.Entity<UserLogin>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("user_login");
+
+                entity.Property(e => e.CreationTime).HasColumnType("datetime");
             });
 
             OnModelCreatingPartial(modelBuilder);
