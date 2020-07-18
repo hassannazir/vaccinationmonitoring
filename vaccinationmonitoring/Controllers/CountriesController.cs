@@ -45,6 +45,15 @@ namespace vaccinationmonitoring.Controllers
                 else
                 { return NotFound();  }
             }
+            if (TempData[AppConstants.SuccessMessage]!=null)
+            {
+                ViewBag.success = TempData[AppConstants.SuccessMessage].ToString();
+            }
+            else if(TempData[AppConstants.ErrorMessage]!=null)
+            {
+                ViewBag.error = TempData[AppConstants.ErrorMessage].ToString();
+            }
+            
             return View(country);
         }
       
@@ -61,6 +70,15 @@ namespace vaccinationmonitoring.Controllers
             var response = await client.PostAsync(u, stringContent);
             if (response.IsSuccessStatusCode)
             {
+                string message = await response.Content.ReadAsStringAsync();
+                if (message==AppConstants.notOk)
+                {
+                    TempData[AppConstants.ErrorMessage] = "Opps! Already Exist";
+                    TempData.Peek(AppConstants.ErrorMessage);
+                    return RedirectToAction(nameof(Index));
+                }
+                TempData[AppConstants.SuccessMessage] = "Successfully Saved";
+                TempData.Peek(AppConstants.SuccessMessage);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -69,7 +87,7 @@ namespace vaccinationmonitoring.Controllers
             }
         }
        
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Delete(int Id)
         {
             Uri u = new Uri(AppConstants.BaseUrl + "api/Countriesapi/" + Id);
@@ -77,6 +95,9 @@ namespace vaccinationmonitoring.Controllers
             var response = await client.DeleteAsync(u);
             if (response.IsSuccessStatusCode)
             {
+
+                TempData[AppConstants.SuccessMessage] = "Successfully Deleted";
+                TempData.Peek(AppConstants.SuccessMessage);
                 return RedirectToAction(nameof(Index));
             }
             else

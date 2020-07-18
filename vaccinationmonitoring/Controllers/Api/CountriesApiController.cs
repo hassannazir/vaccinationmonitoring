@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using vaccinationmonitoring.Helpers;
 using vaccinationmonitoring.Models;
+using vaccinationmonitoring.Models.ResponceModals;
 
 namespace vaccinationmonitoring.Controllers.Api
 {
@@ -95,8 +96,14 @@ namespace vaccinationmonitoring.Controllers.Api
             try
             {
                 Country Ocountry = JsonConvert.DeserializeObject<Country>(country);
+                
                 if (Ocountry.Id == 0)
                 {
+                    Country getCountry = _context.Country.FirstOrDefault(i=>i.Name.Trim().ToLower()==Ocountry.Name.Trim().ToLower());
+                    if (getCountry!=null)
+                    {
+                        return AppConstants.notOk;
+                    }
                     Ocountry.CreatedDate = DateTime.Now;
                     _context.Country.Add(Ocountry);
                 }

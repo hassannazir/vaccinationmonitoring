@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<vaccinationmonitoring.Models.Country>
-
+<input type="hidden" value="@ViewBag.success" id="message" />
+<input type="hidden" value="@ViewBag.error" id="errorMessage" />
     <div class="container-fluid">
         <div class="bg-gradient-primary text-center text-white w-25" style="margin:auto; font-size: x-large; ">All Countries</div>
 
@@ -41,7 +42,7 @@
                         <td>
                             <button data-toggle="modal" data-target="#myModal" data-countryid="@item.Id" data-countryname="@item.Name" class="btn" id="countryEdit">Edit</button> |
                             @*<a asp-action="Details" asp-route-id="@item.Id">Details</a> *@
-                            <button data-countryid="@item.Id" id="countryDelete" class="btn">Delete</button>
+                            <a href="/Countries/Delete?Id=@item.Id" class="btn">Delete</a>
                         </td>
                     </tr>
                 }
@@ -80,7 +81,14 @@
 {
             <script>
                 $(document).ready(function () {
+                    if ($('#message').val() != null && $('#message').val() != '' && $('#message').val()!='undefined') {
+                        swal("Good job!", $('#message').val(), "success");
+                       
+                    }
+                    if ($('#errorMessage').val() != null && $('#errorMessage').val() != '' && $('#errorMessage').val() != 'undefined') {
+                        swal("Sorry!", $('#errorMessage').val(), "error");
 
+                    }
                     $("#countryTable").DataTable();
 
                     $("#content").on('click','#countryEdit',function () {
@@ -88,17 +96,7 @@
                         $('#countryname').val($(this).data('countryname'));
                     });
 
-                    $("#content").on('click', '#countryDelete', function () {
-                        $.ajax({
-                            type: "POST",
-                            url: "/countries/delete?Id=" + $(this).data('countryid'),
-                            success: function (data) {
-                                window.location.reload(true);
-                            },
-                            
-                    });
-                    });
-
+                
                 });
 
             </script>
