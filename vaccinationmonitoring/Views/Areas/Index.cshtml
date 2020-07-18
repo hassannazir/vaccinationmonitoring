@@ -1,4 +1,5 @@
 ﻿@model vaccinationmonitoring.Models.ViewModels.AreaViewModel
+    <input type="hidden" value="@ViewBag.success" id="message" />
     <div class="container-fluid">
         <div class="bg-gradient-primary text-center text-white w-25" style="margin:auto; font-size: x-large; ">All Areas</div>
 
@@ -43,7 +44,7 @@
                         <td>
                             <button data-toggle="modal" data-target="#myModal" data-cityid="@item.CityId" data-cityname="@item.CityName" data-areaname="@item.AreaName" data-areaid="@item.AreaId" class="btn" id="areaEdit">Edit</button> |
                             @*<a asp-action="Details" asp-route-id="@item.Id">Details</a> *@
-                            <button data-areaid="@item.AreaId" id="areaDelete" class="btn">Delete</button>
+                            <a href="/Areas/Delete?Id=@item.AreaId" class="btn">Delete</a>
                         </td>
                     </tr>
                 }
@@ -68,14 +69,14 @@
                                 <input type="text" class="form-control" id="areaname" name="areaname" required>
                             </div>
                             <div class="form-group">
-                                <label for="cityname">
+                                <label for="cityname">City</label>
                                     <select class="form-control" id="cityname" name="cityId">
                                         @foreach (var item in Model.CityList)
                                         {
                                             <option value="@item.Id">@item.Name</option>
                                         }
                                     </select>
-                                </label>
+                                
                             </div>
                             <button type="reset" class="btn btn-danger text-white float-left">Reset</button>
                             <button type="submit" class="btn btn-primary text-white float-right">Submit</button>
@@ -91,7 +92,10 @@
 {
     <script>
         $(document).ready(function () {
+            if ($('#message').val() != null && $('#message').val() != '' && $('#message').val() != 'undefined') {
+                swal("Good job!", $('#message').val(), "success");
 
+            }
             $("#areaTable").DataTable();
             $("#content").on('click', '#areaEdit', function () {
                 alert(1);
@@ -100,16 +104,7 @@
                 $('#cityname option[value="' + $(this).data('cityid') + '"]').prop('selected', true);
             });
 
-            $("#content").on('click', '#areaDelete', function () {
-                $.ajax({
-                    type: "POST",
-                    url: "/areas/delete?Id=" + $(this).data('areaid'),
-                    success: function (data) {
-                        window.location.reload(true);
-                    },
-
-                });
-            });
+         
 
         });
     </script>

@@ -1,4 +1,5 @@
 ﻿@model vaccinationmonitoring.Models.ViewModels.CityViewModel
+    <input type="hidden" value="@ViewBag.success" id="message" />
     <div class="container-fluid">
         <div class="bg-gradient-primary text-center text-white w-25" style="margin:auto; font-size: x-large; ">All Cities</div>
 
@@ -43,7 +44,7 @@
                         <td>
                             <button data-toggle="modal" data-target="#myModal" data-provinceid="@item.ProvinceId" data-provincename="@item.ProvinceName" data-cityname="@item.CityName" data-cityid="@item.CityId" class="btn" id="cityEdit">Edit</button> |
                             @*<a asp-action="Details" asp-route-id="@item.Id">Details</a> *@
-                            <button data-cityid="@item.CityId" id="cityDelete" class="btn">Delete</button>
+                            <a href="/Cities/Delete?Id=@item.CityId" class="btn">Delete</a>
                         </td>
                     </tr>
                 }
@@ -68,14 +69,14 @@
                                 <input type="text" class="form-control" id="cityname" name="cityname" required>
                             </div>
                             <div class="form-group">
-                                <label for="provincename">
+                                <label for="provincename">Province</label>
                                     <select class="form-control" id="provincename" name="provinceId">
                                         @foreach (var item in Model.ProvinceList)
                                         {
                                             <option value="@item.Id">@item.Name</option>
                                         }
                                     </select>
-                                </label>
+                                
                             </div>
                             <button type="reset" class="btn btn-danger text-white float-left">Reset</button>
                             <button type="submit" class="btn btn-primary text-white float-right">Submit</button>
@@ -92,7 +93,10 @@
 {
     <script>
         $(document).ready(function () {
+            if ($('#message').val() != null && $('#message').val() != '' && $('#message').val() != 'undefined') {
+                swal("Good job!", $('#message').val(), "success");
 
+            }
             $("#cityTable").DataTable();
 
             $("#content").on('click', '#cityEdit', function () {
@@ -102,16 +106,7 @@
                 $('#provincename option[value="' + $(this).data('provinceid') + '"]').prop('selected', true);
             });
 
-            $("#content").on('click', '#cityDelete', function () {
-                $.ajax({
-                    type: "POST",
-                    url: "/cities/delete?Id=" + $(this).data('cityid'),
-                    success: function (data) {
-                        window.location.reload(true);
-                    },
-
-                });
-            });
+           
 
         });
     </script>

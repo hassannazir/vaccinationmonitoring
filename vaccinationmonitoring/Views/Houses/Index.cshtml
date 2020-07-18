@@ -1,4 +1,5 @@
 ﻿@model vaccinationmonitoring.Models.ViewModels.HouseViewModel
+    <input type="hidden" value="@ViewBag.success" id="message" />
     <div class="container-fluid">
         <div class="bg-gradient-primary text-center text-white w-25" style="margin:auto; font-size: x-large; ">All Houses</div>
 
@@ -43,7 +44,7 @@
                         <td>
                             <button data-toggle="modal" data-target="#myModal" data-areaid="@item.AreaId" data-areaname="@item.AreaName" data-housename="@item.HouseNo" data-houseid="@item.HouseId" class="btn" id="houseEdit">Edit</button> |
                             @*<a asp-action="Details" asp-route-id="@item.Id">Details</a> *@
-                            <button data-houseid="@item.HouseId" id="houseDelete" class="btn">Delete</button>
+                            <a href="/Houses/Delete?Id=@item.HouseId" class="btn">Delete</a>
                         </td>
                     </tr>
                 }
@@ -67,14 +68,14 @@
                                 <input type="text" class="form-control" id="housename" name="housename" required>
                             </div>
                             <div class="form-group">
-                                <label for="areaname">
+                                <label for="areaname">Area</label>
                                     <select class="form-control" id="areaname" name="areaId">
                                         @foreach (var item in Model.AreaList)
                                         {
                                             <option value="@item.Id">@item.Name</option>
                                         }
                                     </select>
-                                </label>
+                                
                             </div>
                             <button type="reset" class="btn btn-danger text-white float-left">Reset</button>
                             <button type="submit" class="btn btn-primary text-white float-right">Submit</button>
@@ -90,7 +91,10 @@
 {
     <script>
         $(document).ready(function () {
+            if ($('#message').val() != null && $('#message').val() != '' && $('#message').val() != 'undefined') {
+                swal("Good job!", $('#message').val(), "success");
 
+            }
             $("#houseTable").DataTable();
             $("#content").on('click', '#houseEdit', function () {
               
@@ -99,16 +103,7 @@
                 $('#areaname option[value="' + $(this).data('areaid') + '"]').prop('selected', true);
             });
 
-            $("#content").on('click', '#houseDelete', function () {
-                $.ajax({
-                    type: "POST",
-                    url: "/houses/delete?Id=" + $(this).data('houseid'),
-                    success: function (data) {
-                        window.location.reload(true);
-                    },
-
-                });
-            });
+        
         });
     </script>
 

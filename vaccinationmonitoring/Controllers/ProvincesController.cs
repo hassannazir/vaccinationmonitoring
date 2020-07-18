@@ -52,6 +52,12 @@ namespace vaccinationmonitoring.Controllers
                 else
                 { return NotFound(); }
 
+                if (TempData[AppConstants.SuccessMessage] != null)
+                {
+                    string message = TempData[AppConstants.SuccessMessage].ToString();
+                    ViewBag.success = message;
+                }
+
 
             }
             return View(provinceViewModel);
@@ -71,6 +77,8 @@ namespace vaccinationmonitoring.Controllers
             var response = await client.PostAsync(u, stringContent);
             if (response.IsSuccessStatusCode)
             {
+                TempData[AppConstants.SuccessMessage] = "Successfully Saved";
+                TempData.Peek(AppConstants.SuccessMessage);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -79,7 +87,8 @@ namespace vaccinationmonitoring.Controllers
             }
         }
 
-        [HttpPost]
+
+        [HttpGet]
         public async Task<IActionResult> Delete(int Id)
         {
             Uri u = new Uri(AppConstants.BaseUrl + "api/provincesapi/" + Id);
@@ -87,6 +96,8 @@ namespace vaccinationmonitoring.Controllers
             var response = await client.DeleteAsync(u);
             if (response.IsSuccessStatusCode)
             {
+                TempData[AppConstants.SuccessMessage] = "Successfully Deleted";
+                TempData.Peek(AppConstants.SuccessMessage);
                 return RedirectToAction(nameof(Index));
             }
             else
